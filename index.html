@@ -3,155 +3,374 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edmonton Analytics</title>
 <style>
+:root{--bg:#0b1220;--panel:#151f31;--panel2:#1b2940;--text:#edf3fc;--muted:#9aabc2;--blue:#63a8ff;--line:#2a3a52;--green:#65d6a1}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172d43}
-header{background:#172d43;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center}
-h1{margin:0;font-size:24px}
-header p{margin:5px 0 0;color:#b9cbd9;font-size:12px}
-button{border:0;border-radius:8px;padding:11px 16px;cursor:pointer;font-weight:bold}
-.lang{background:white;color:#172d43}
-nav{display:flex;gap:8px;flex-wrap:wrap;margin:25px 0}
-nav button{background:white;color:#172d43}
-nav button.active{background:#2879b9;color:white}
-main{max-width:1150px;margin:auto;padding:20px}
-h2{font-size:21px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
-.card{background:white;border-radius:13px;padding:20px;box-shadow:0 3px 12px #00000008;margin-bottom:15px}
-.card small{color:#64748b}
-.value{font-size:27px;font-weight:bold;margin:10px 0}
-.layout{display:grid;grid-template-columns:1.3fr 1fr;gap:15px}
-.chart{height:190px;display:flex;align-items:end;gap:12px;padding:15px 5px 0;border-bottom:1px solid #ddd}
-.barbox{flex:1;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:8px}
-.bar{width:65%;background:#3284bd;border-radius:6px 6px 0 0}
-.barbox small{font-size:11px}
-.map{height:230px;background:#e1ebdf;border-radius:10px;display:grid;place-items:center;text-align:center;color:#496274;padding:15px}
-.section{display:none}.section.active{display:block}
-.notice{background:#eaf3fa;padding:13px;border-radius:9px;color:#31546d;font-size:13px}
-input{margin:12px 0}
-table{width:100%;border-collapse:collapse;margin-top:15px}
-td,th{padding:9px;border-bottom:1px solid #ddd;text-align:left;font-size:13px}
-footer{text-align:center;color:#64748b;font-size:12px;padding:25px}
-@media(max-width:800px){.cards{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
-@media(max-width:450px){header{padding:18px 12px}h1{font-size:19px}main{padding:12px}.cards{gap:8px}.card{padding:13px}}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{padding:25px max(5%,calc((100% - 1150px)/2));background:#111c2d;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+h1{font-size:26px;margin:0}
+header p{margin:7px 0 0;color:var(--muted);font-size:13px}
+button,select,input{font:inherit}
+button{background:var(--blue);color:#081321;border:0;border-radius:9px;padding:10px 15px;font-weight:bold;cursor:pointer}
+main{max-width:1150px;margin:auto;padding:25px 18px 50px}
+h2{font-size:19px;margin:0 0 17px}
+h3{font-size:15px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:25px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:19px;min-width:0}
+.big{font-size:38px;font-weight:bold;margin:9px 0}
+.muted{color:var(--muted);font-size:13px}
+.weather-details{display:flex;gap:15px;flex-wrap:wrap;margin-top:15px;font-size:13px;color:var(--muted)}
+.forecast{display:grid;grid-template-columns:repeat(7,minmax(95px,1fr));gap:9px;overflow-x:auto}
+.day{background:var(--panel2);border-radius:10px;padding:12px;text-align:center;font-size:13px}
+.day strong{display:block;margin:8px 0;font-size:18px}
+.section{margin:28px 0}
+.list{display:grid;gap:10px}
+.item{padding:13px;background:var(--panel2);border-radius:10px;border-left:3px solid var(--blue)}
+.item strong{display:block;margin-bottom:6px}
+.item small{color:var(--muted);line-height:1.5}
+.chart{display:flex;align-items:end;gap:8px;height:190px;padding:15px 3px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+.bar-wrap{min-width:35px;flex:1;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:7px}
+.bar{width:75%;max-width:38px;min-height:2px;background:var(--blue);border-radius:5px 5px 0 0}
+.bar-label{font-size:11px;color:var(--muted)}
+.form-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:7px}
+input{width:100%;padding:12px;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px}
+.result{background:var(--panel2);border-radius:12px;padding:17px;margin-top:15px}
+.result strong{font-size:28px;color:var(--green)}
+a{color:var(--blue)}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+.status{font-size:12px;color:var(--muted);margin-top:10px}
+@media(max-width:750px){.grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.forecast{grid-template-columns:repeat(7,105px)}header{padding:20px}.big{font-size:34px}}
 </style>
 </head>
 <body>
 <header>
-<div>
-<h1>Edmonton Analytics</h1>
-<p>CITY DATA PLATFORM · ALBERTA, CANADA</p>
-</div>
-<button class="lang" onclick="changeLang()" id="lang">EN</button>
+ <div>
+  <h1>Edmonton Analytics</h1>
+  <p id="subtitle">Городская аналитическая панель · Edmonton, Alberta</p>
+ </div>
+ <button id="language">EN</button>
 </header>
 
 <main>
-<nav>
-<button class="active" onclick="show('home',this)" data-ru="Обзор" data-en="Overview">Обзор</button>
-<button onclick="show('weather',this)" data-ru="Погода" data-en="Weather">Погода</button>
-<button onclick="show('events',this)" data-ru="События" data-en="Events">События</button>
-<button onclick="show('stats',this)" data-ru="Статистика" data-en="Statistics">Статистика</button>
-<button onclick="show('import',this)" data-ru="Импорт данных" data-en="Import data">Импорт данных</button>
-</nav>
+ <section class="section">
+  <h2 id="weatherTitle">Погода сейчас</h2>
+  <div class="grid">
+   <div class="panel">
+    <div class="muted" id="weatherLocation">Эдмонтон, Альберта</div>
+    <div class="big" id="temperature">—</div>
+    <div id="weatherDescription">Загрузка погоды...</div>
+    <div class="weather-details">
+     <span id="feels">Ощущается: —</span>
+     <span id="wind">Ветер: —</span>
+     <span id="rain">Осадки: —</span>
+    </div>
+    <div class="status" id="weatherStatus">Open-Meteo</div>
+   </div>
+   <div class="panel">
+    <h3 id="trafficTitle">Дорожная обстановка</h3>
+    <div class="big" id="trafficCount">—</div>
+    <div class="muted" id="trafficLabel">Текущие дорожные ограничения</div>
+    <div class="status" id="trafficStatus">Загрузка...</div>
+   </div>
+   <div class="panel">
+    <h3 id="eventsTitle">Городские мероприятия</h3>
+    <div class="big" id="eventCount">—</div>
+    <div class="muted" id="eventsLabel">Предстоящие события</div>
+    <div class="status" id="eventsStatus">Загрузка...</div>
+   </div>
+  </div>
+ </section>
 
-<section id="home" class="section active">
-<h2 data-ru="Обзор Эдмонтона" data-en="Edmonton Overview">Обзор Эдмонтона</h2>
-<p data-ru="Главная аналитическая панель" data-en="Main analytics dashboard">Главная аналитическая панель</p>
+ <section class="section">
+  <h2 id="forecastTitle">Прогноз погоды на 7 дней</h2>
+  <div class="forecast" id="forecast"></div>
+ </section>
 
-<div class="cards">
-<div class="card"><small data-ru="Погода" data-en="Weather">Погода</small><div class="value">—</div><small>API pending</small></div>
-<div class="card"><small data-ru="События" data-en="Events">События</small><div class="value">—</div><small>Calendar pending</small></div>
-<div class="card"><small data-ru="Записи" data-en="Records">Записи</small><div class="value" id="count">0</div><small data-ru="Импортированные данные" data-en="Imported data">Импортированные данные</small></div>
-<div class="card"><small data-ru="Статус" data-en="Status">Статус</small><div class="value" style="font-size:21px" data-ru="Демо" data-en="Demo">Демо</div><small data-ru="Источники не подключены" data-en="Sources not connected">Источники не подключены</small></div>
-</div>
+ <section class="section panel">
+  <h2 id="activityTitle">Почасовая городская активность</h2>
+  <p class="muted" id="activityDescription">Количество запланированных мероприятий по времени начала сегодня. Это не измерение дорожного трафика.</p>
+  <div class="chart" id="activityChart"></div>
+  <div class="status" id="activityStatus">Ожидание данных календаря...</div>
+ </section>
 
-<div class="layout">
-<div class="card">
-<h2 data-ru="Пример наблюдений" data-en="Sample observations">Пример наблюдений</h2>
-<div class="chart">
-<div class="barbox"><div class="bar" style="height:38%"></div><small>Mon</small></div>
-<div class="barbox"><div class="bar" style="height:55%"></div><small>Tue</small></div>
-<div class="barbox"><div class="bar" style="height:43%"></div><small>Wed</small></div>
-<div class="barbox"><div class="bar" style="height:72%"></div><small>Thu</small></div>
-<div class="barbox"><div class="bar" style="height:61%"></div><small>Fri</small></div>
-<div class="barbox"><div class="bar" style="height:86%"></div><small>Sat</small></div>
-<div class="barbox"><div class="bar" style="height:68%"></div><small>Sun</small></div>
-</div>
-<small data-ru="Демонстрационные значения" data-en="Illustrative values">Демонстрационные значения</small>
-</div>
+ <section class="section">
+  <h2 id="roadsTitle">Актуальные дорожные ограничения</h2>
+  <div class="list" id="roadsList">
+   <div class="panel muted">Загрузка дорожных данных...</div>
+  </div>
+  <p class="muted"><a href="https://data.edmonton.ca/Transportation/Traffic-Disruptions-Map/mhbf-f3zb" target="_blank">Источник: City of Edmonton</a></p>
+ </section>
 
-<div class="card">
-<h2 data-ru="Карта Эдмонтона" data-en="Edmonton Map">Карта Эдмонтона</h2>
-<div class="map">📍<br><b>Edmonton, Alberta</b><br>Interactive map coming soon</div>
-</div>
-</div>
-</section>
+ <section class="section">
+  <h2 id="eventsListTitle">Предстоящие мероприятия</h2>
+  <div class="list" id="eventsList">
+   <div class="panel muted">Загрузка календаря...</div>
+  </div>
+  <p class="muted"><a href="https://data.edmonton.ca/Events/Public-Events-Calendar-Listings/k2ip-5w5d" target="_blank">Источник: City of Edmonton</a></p>
+ </section>
 
-<section id="weather" class="section">
-<div class="card"><h2 data-ru="Погода" data-en="Weather">Погода</h2><p data-ru="Здесь появится актуальный прогноз погоды." data-en="Live weather forecast will appear here.">Здесь появится актуальный прогноз погоды.</p><div class="notice">Weather API not connected yet.</div></div>
-</section>
+ <section class="section panel">
+  <h2 id="plannerTitle">Планирование времени выезда</h2>
+  <p class="muted" id="plannerDescription">Рассчитай время отправления, чтобы прибыть к нужному часу. Учитывай запас времени на дорогу.</p>
+  <div class="form-row">
+   <div>
+    <label id="arrivalLabel" for="arrival">Время прибытия</label>
+    <input id="arrival" type="time" value="08:00">
+   </div>
+   <div>
+    <label id="durationLabel" for="duration">Время поездки (минуты)</label>
+    <input id="duration" type="number" min="1" max="600" value="30">
+   </div>
+   <div>
+    <label id="bufferLabel" for="buffer">Запас времени (минуты)</label>
+    <input id="buffer" type="number" min="0" max="180" value="15">
+   </div>
+  </div>
+  <button style="margin-top:15px" id="calculate">Рассчитать</button>
+  <div class="result" id="calculationResult" aria-live="polite">
+   <div class="muted" id="departureLabel">Рекомендуемое время отправления</div>
+   <strong id="departureTime">07:15</strong>
+   <div class="muted" id="calculationNote">Расчёт основан на введённой продолжительности поездки, а не на live-пробках.</div>
+  </div>
+ </section>
 
-<section id="events" class="section">
-<div class="card"><h2 data-ru="Городские события" data-en="City Events">Городские события</h2><p data-ru="Календарь концертов, фестивалей и мероприятий." data-en="Calendar of concerts, festivals and public events.">Календарь концертов, фестивалей и мероприятий.</p></div>
-</section>
-
-<section id="stats" class="section">
-<div class="card"><h2 data-ru="Статистика" data-en="Statistics">Статистика</h2><div id="tableArea">No imported data yet.</div></div>
-</section>
-
-<section id="import" class="section">
-<div class="card">
-<h2 data-ru="Импорт данных" data-en="Import Data">Импорт данных</h2>
-<p data-ru="Загрузить CSV-файл для анализа." data-en="Upload a CSV file for analysis.">Загрузить CSV-файл для анализа.</p>
-<input type="file" id="file" accept=".csv">
-<p id="status"></p>
-</div>
-</section>
+ <div class="status" id="updated"></div>
 </main>
 
-<footer>Edmonton Analytics · Prototype 0.1</footer>
+<footer>
+ Edmonton Analytics · Public information dashboard<br>
+ Weather: Open-Meteo · City data: City of Edmonton
+</footer>
 
 <script>
-let language='ru';
+const $ = id => document.getElementById(id);
+let lang = "ru";
+let weatherData = null;
+let eventsData = [];
 
-function show(id,button){
-document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-button.classList.add('active');
+const words = {
+ ru:{
+  subtitle:"Городская аналитическая панель · Edmonton, Alberta",
+  weatherTitle:"Погода сейчас",weatherLocation:"Эдмонтон, Альберта",
+  feels:"Ощущается",wind:"Ветер",rain:"Осадки",
+  trafficTitle:"Дорожная обстановка",trafficLabel:"Текущие дорожные ограничения",
+  eventsTitle:"Городские мероприятия",eventsLabel:"Предстоящие события",
+  forecastTitle:"Прогноз погоды на 7 дней",
+  activityTitle:"Почасовая городская активность",
+  activityDescription:"Количество запланированных мероприятий по времени начала сегодня. Это не измерение дорожного трафика.",
+  roadsTitle:"Актуальные дорожные ограничения",
+  eventsListTitle:"Предстоящие мероприятия",
+  plannerTitle:"Планирование времени выезда",
+  plannerDescription:"Рассчитай время отправления, чтобы прибыть к нужному часу. Учитывай запас времени на дорогу.",
+  arrivalLabel:"Время прибытия",durationLabel:"Время поездки (минуты)",
+  bufferLabel:"Запас времени (минуты)",calculate:"Рассчитать",
+  departureLabel:"Расчётное время отправления",
+  calculationNote:"Расчёт основан на введённой продолжительности поездки, а не на live-пробках.",
+  noData:"Нет доступных данных",loading:"Загрузка...",
+  weatherError:"Не удалось загрузить погоду",
+  trafficError:"Не удалось загрузить дорожные данные",
+  eventsError:"Не удалось загрузить календарь",
+  eventsToday:"мероприятий сегодня",noRoads:"Нет текущих дорожных ограничений в полученных данных",
+  noEvents:"Предстоящие мероприятия не найдены",
+  current:"Текущие",starts:"Начало",ends:"Окончание",venue:"Место",
+  updated:"Последнее обновление",invalid:"Проверь введённые значения.",
+  tomorrow:"Завтра",today:"Сегодня"
+ },
+ en:{
+  subtitle:"City analytics dashboard · Edmonton, Alberta",
+  weatherTitle:"Current weather",weatherLocation:"Edmonton, Alberta",
+  feels:"Feels like",wind:"Wind",rain:"Precipitation",
+  trafficTitle:"Road conditions",trafficLabel:"Current road disruptions",
+  eventsTitle:"City events",eventsLabel:"Upcoming events",
+  forecastTitle:"7-day weather forecast",
+  activityTitle:"Hourly city activity",
+  activityDescription:"Scheduled event start times today. This is not a measurement of road traffic.",
+  roadsTitle:"Current road disruptions",
+  eventsListTitle:"Upcoming events",
+  plannerTitle:"Departure time planner",
+  plannerDescription:"Calculate when to leave to arrive at your chosen time, including a time buffer.",
+  arrivalLabel:"Arrival time",durationLabel:"Trip duration (minutes)",
+  bufferLabel:"Time buffer (minutes)",calculate:"Calculate",
+  departureLabel:"Calculated departure time",
+  calculationNote:"Based on the trip duration you entered, not live traffic conditions.",
+  noData:"No data available",loading:"Loading...",
+  weatherError:"Could not load weather",
+  trafficError:"Could not load road data",
+  eventsError:"Could not load events",
+  eventsToday:"events today",noRoads:"No current disruptions found in the returned data",
+  noEvents:"No upcoming events found",
+  current:"Current",starts:"Starts",ends:"Ends",venue:"Venue",
+  updated:"Last updated",tomorrow:"Tomorrow",today:"Today",
+  invalid:"Please check the values you entered."
+ }
+};
+
+function t(key){return words[lang][key] || key}
+function setText(id,value){$(id).textContent=value}
+function weatherText(code){
+ const ru={0:"Ясно",1:"Преимущественно ясно",2:"Переменная облачность",3:"Облачно",45:"Туман",48:"Изморозь",51:"Морось",53:"Морось",55:"Сильная морось",61:"Небольшой дождь",63:"Дождь",65:"Сильный дождь",71:"Небольшой снег",73:"Снег",75:"Сильный снег",77:"Снежные зёрна",80:"Ливень",81:"Ливень",82:"Сильный ливень",85:"Снегопад",86:"Сильный снегопад",95:"Гроза",96:"Гроза с градом",99:"Сильная гроза"};
+ const en={0:"Clear",1:"Mainly clear",2:"Partly cloudy",3:"Overcast",45:"Fog",48:"Rime fog",51:"Drizzle",53:"Drizzle",55:"Heavy drizzle",61:"Light rain",63:"Rain",65:"Heavy rain",71:"Light snow",73:"Snow",75:"Heavy snow",77:"Snow grains",80:"Showers",81:"Showers",82:"Heavy showers",85:"Snow showers",86:"Heavy snow showers",95:"Thunderstorm",96:"Thunderstorm with hail",99:"Severe thunderstorm"};
+ return (lang==="ru"?ru:en)[code] || t("noData");
+}
+function dateLabel(date){
+ return new Date(date+"T12:00:00").toLocaleDateString(lang==="ru"?"ru-CA":"en-CA",{weekday:"short",day:"numeric",month:"short"});
 }
 
-function changeLang(){
-language=language==='ru'?'en':'ru';
-document.getElementById('lang').textContent=language==='ru'?'EN':'RU';
-document.documentElement.lang=language;
-document.querySelectorAll('[data-ru]').forEach(el=>{
-el.textContent=el.getAttribute('data-'+language);
-});
+async function loadWeather(){
+ const url="https://api.open-meteo.com/v1/forecast?latitude=53.5461&longitude=-113.4938&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=precipitation_probability&timezone=America%2FEdmonton&forecast_days=7";
+ try{
+  const r=await fetch(url);
+  if(!r.ok)throw Error("weather");
+  const d=await r.json();weatherData=d;
+  const c=d.current;
+  setText("temperature",Math.round(c.temperature_2m)+"°C");
+  setText("weatherDescription",weatherText(c.weather_code));
+  setText("feels",t("feels")+": "+Math.round(c.apparent_temperature)+"°C");
+  setText("wind",t("wind")+": "+Math.round(c.wind_speed_10m)+" km/h");
+  setText("rain",t("rain")+": "+c.precipitation+" mm");
+  setText("weatherStatus","Open-Meteo · "+new Date().toLocaleTimeString());
+  $("forecast").innerHTML=d.daily.time.map((day,i)=>`
+   <div class="day">${dateLabel(day)}<strong>${Math.round(d.daily.temperature_2m_max[i])}°</strong>
+   <div>${weatherText(d.daily.weather_code[i])}</div>
+   <div class="muted">${Math.round(d.daily.temperature_2m_min[i])}°</div>
+   <div class="muted">☂ ${d.daily.precipitation_probability_max[i] ?? "—"}%</div></div>
+  `).join("");
+ }catch(e){
+  setText("weatherDescription",t("weatherError"));
+  setText("weatherStatus",t("noData"));
+  $("forecast").textContent=t("noData");
+ }
 }
 
-document.getElementById('file').addEventListener('change',async function(){
-const file=this.files[0];
-if(!file)return;
-const text=await file.text();
-const lines=text.split(/\r?\n/).filter(x=>x.trim());
-const headers=lines[0].split(',');
-const rows=lines.slice(1);
-document.getElementById('count').textContent=rows.length;
-document.getElementById('status').textContent='Loaded: '+file.name;
-let html='<table><tr>'+headers.map(h=>'<th>'+escapeHtml(h)+'</th>').join('')+'</tr>';
-rows.slice(0,100).forEach(row=>{
-html+='<tr>'+row.split(',').map(v=>'<td>'+escapeHtml(v)+'</td>').join('')+'</tr>';
-});
-html+='</table>';
-document.getElementById('tableArea').innerHTML=html;
-});
-
-function escapeHtml(s){
-return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function loadTraffic(){
+ const url="https://data.edmonton.ca/resource/mhbf-f3zb.json?$where=status%20%3D%20%27Current%27&$order=finish_date%20ASC&$limit=50";
+ try{
+  const r=await fetch(url);
+  if(!r.ok)throw Error("traffic");
+  const rows=await r.json();
+  setText("trafficCount",rows.length);
+  setText("trafficStatus",t("current")+" · City of Edmonton");
+  const list=$("roadsList");
+  if(!rows.length){list.innerHTML=`<div class="panel muted">${t("noRoads")}</div>`;return}
+  list.innerHTML=rows.slice(0,12).map(x=>`
+   <div class="item">
+    <strong>${escapeHtml(x.on_street || x.closure || "Road disruption")}</strong>
+    <small>${escapeHtml(x.impact || "")} · ${escapeHtml(x.traffic_district || "")}<br>
+    ${escapeHtml(x.details || x.description || "")}<br>
+    ${t("starts")}: ${escapeHtml(x.start_date || "—")} · ${t("ends")}: ${escapeHtml(x.finish_date || "—")}
+    </small>
+   </div>`).join("");
+ }catch(e){
+  setText("trafficCount","—");setText("trafficStatus",t("trafficError"));
+  $("roadsList").innerHTML=`<div class="panel muted">${t("trafficError")}</div>`;
+ }
 }
+
+async function loadEvents(){
+ const today=new Date();
+ const date=today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0");
+ const url="https://data.edmonton.ca/resource/k2ip-5w5d.json?$where=begins%20%3E%3D%20%27"+date+"T00:00:00%27&$order=begins%20ASC&$limit=100";
+ try{
+  const r=await fetch(url);
+  if(!r.ok)throw Error("events");
+  eventsData=await r.json();
+  const todayKey=date;
+  const todays=eventsData.filter(e=>(e.begins||"").slice(0,10)===todayKey);
+  setText("eventCount",eventsData.length);
+  setText("eventsStatus",t("eventsToday")+": "+todays.length);
+  renderEvents();
+  renderActivity(todays);
+ }catch(e){
+  setText("eventCount","—");setText("eventsStatus",t("eventsError"));
+  $("eventsList").innerHTML=`<div class="panel muted">${t("eventsError")}</div>`;
+  $("activityChart").innerHTML="";
+  setText("activityStatus",t("noData"));
+ }
+}
+
+function renderEvents(){
+ const list=$("eventsList");
+ if(!eventsData.length){list.innerHTML=`<div class="panel muted">${t("noEvents")}</div>`;return}
+ list.innerHTML=eventsData.slice(0,15).map(e=>{
+  const link=e.event_link ? `<a href="${safeUrl(e.event_link)}" target="_blank" rel="noopener"> ${lang==="ru"?"Подробнее":"Details"}</a>`:"";
+  return `<div class="item">
+   <strong>${escapeHtml(e.title||"Event")}</strong>
+   <small>${escapeHtml(e.begins||"")} · ${escapeHtml(e.start_time||"")}<br>
+   ${t("venue")}: ${escapeHtml(e.event_venue||e.neighbourhood||"—")}<br>
+   ${escapeHtml(e.event_type||"")} ${link}</small>
+  </div>`;
+ }).join("");
+}
+
+function renderActivity(todays){
+ const counts=Array(24).fill(0);
+ todays.forEach(e=>{
+  const time=e.start_time || "";
+  const hour=parseInt(time.split(":")[0],10);
+  if(Number.isInteger(hour)&&hour>=0&&hour<24)counts[hour]++;
+ });
+ const max=Math.max(1,...counts);
+ const hours=[5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22];
+ $("activityChart").innerHTML=hours.map(h=>{
+  const n=counts[h],height=n?Math.max(5,n/max*100):2;
+  return `<div class="bar-wrap"><span class="bar-label">${n}</span><div class="bar" style="height:${height}%"></div><span class="bar-label">${h}:00</span></div>`;
+ }).join("");
+ setText("activityStatus",lang==="ru"?"Число событий, начинающихся в каждый час сегодня.":"Number of events starting in each hour today.");
+}
+
+function escapeHtml(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function safeUrl(value){
+ try{const u=new URL(value);return u.protocol==="https:"||u.protocol==="http:"?u.href:"#"}catch{return "#"}
+}
+
+function calculate(){
+ const arrival=$("arrival").value;
+ const duration=Number($("duration").value);
+ const buffer=Number($("buffer").value);
+ if(!arrival||!Number.isFinite(duration)||!Number.isFinite(buffer)||duration<1||duration>600||buffer<0||buffer>180){
+  setText("departureTime",t("invalid"));return;
+ }
+ const [h,m]=arrival.split(":").map(Number);
+ let total=h*60+m-duration-buffer;
+ total=(total+1440*2)%(1440);
+ setText("departureTime",String(Math.floor(total/60)).padStart(2,"0")+":"+String(total%60).padStart(2,"0"));
+}
+
+function applyLanguage(){
+ document.documentElement.lang=lang;
+ $("language").textContent=lang==="ru"?"EN":"RU";
+ Object.keys(words[lang]).forEach(key=>{
+  if($(key))setText(key,t(key));
+ });
+ if(weatherData){
+  setText("weatherDescription",weatherText(weatherData.current.weather_code));
+  setText("feels",t("feels")+": "+Math.round(weatherData.current.apparent_temperature)+"°C");
+  setText("wind",t("wind")+": "+Math.round(weatherData.current.wind_speed_10m)+" km/h");
+  setText("rain",t("rain")+": "+weatherData.current.precipitation+" mm");
+  $("forecast").innerHTML=weatherData.daily.time.map((day,i)=>`
+   <div class="day">${dateLabel(day)}<strong>${Math.round(weatherData.daily.temperature_2m_max[i])}°</strong>
+   <div>${weatherText(weatherData.daily.weather_code[i])}</div>
+   <div class="muted">${Math.round(weatherData.daily.temperature_2m_min[i])}°</div>
+   <div class="muted">☂ ${weatherData.daily.precipitation_probability_max[i] ?? "—"}%</div></div>`).join("");
+ }
+ if(eventsData.length){renderEvents();renderActivity(eventsData.filter(e=>(e.begins||"").slice(0,10)===new Date().toLocaleDateString("en-CA",{timeZone:"America/Edmonton"})))}
+}
+$("language").addEventListener("click",()=>{lang=lang==="ru"?"en":"ru";applyLanguage()});
+$("calculate").addEventListener("click",calculate);
+calculate();
+applyLanguage();
+loadWeather();
+loadTraffic();
+loadEvents();
+setText("updated",t("updated")+": "+new Date().toLocaleString());
+setInterval(loadWeather,15*60*1000);
+setInterval(loadTraffic,10*60*1000);
+setInterval(loadEvents,30*60*1000);
 </script>
 </body>
 </html>
