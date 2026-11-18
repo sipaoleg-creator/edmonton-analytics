@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edmonton Analytics</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172d43}
+header{background:#172d43;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center}
+h1{margin:0;font-size:24px}
+header p{margin:5px 0 0;color:#b9cbd9;font-size:12px}
+button{border:0;border-radius:8px;padding:11px 16px;cursor:pointer;font-weight:bold}
+.lang{background:white;color:#172d43}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:25px 0}
+nav button{background:white;color:#172d43}
+nav button.active{background:#2879b9;color:white}
+main{max-width:1150px;margin:auto;padding:20px}
+h2{font-size:21px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.card{background:white;border-radius:13px;padding:20px;box-shadow:0 3px 12px #00000008;margin-bottom:15px}
+.card small{color:#64748b}
+.value{font-size:27px;font-weight:bold;margin:10px 0}
+.layout{display:grid;grid-template-columns:1.3fr 1fr;gap:15px}
+.chart{height:190px;display:flex;align-items:end;gap:12px;padding:15px 5px 0;border-bottom:1px solid #ddd}
+.barbox{flex:1;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:8px}
+.bar{width:65%;background:#3284bd;border-radius:6px 6px 0 0}
+.barbox small{font-size:11px}
+.map{height:230px;background:#e1ebdf;border-radius:10px;display:grid;place-items:center;text-align:center;color:#496274;padding:15px}
+.section{display:none}.section.active{display:block}
+.notice{background:#eaf3fa;padding:13px;border-radius:9px;color:#31546d;font-size:13px}
+input{margin:12px 0}
+table{width:100%;border-collapse:collapse;margin-top:15px}
+td,th{padding:9px;border-bottom:1px solid #ddd;text-align:left;font-size:13px}
+footer{text-align:center;color:#64748b;font-size:12px;padding:25px}
+@media(max-width:800px){.cards{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
+@media(max-width:450px){header{padding:18px 12px}h1{font-size:19px}main{padding:12px}.cards{gap:8px}.card{padding:13px}}
+</style>
+</head>
+<body>
+<header>
+<div>
+<h1>Edmonton Analytics</h1>
+<p>CITY DATA PLATFORM · ALBERTA, CANADA</p>
+</div>
+<button class="lang" onclick="changeLang()" id="lang">EN</button>
+</header>
+
+<main>
+<nav>
+<button class="active" onclick="show('home',this)" data-ru="Обзор" data-en="Overview">Обзор</button>
+<button onclick="show('weather',this)" data-ru="Погода" data-en="Weather">Погода</button>
+<button onclick="show('events',this)" data-ru="События" data-en="Events">События</button>
+<button onclick="show('stats',this)" data-ru="Статистика" data-en="Statistics">Статистика</button>
+<button onclick="show('import',this)" data-ru="Импорт данных" data-en="Import data">Импорт данных</button>
+</nav>
+
+<section id="home" class="section active">
+<h2 data-ru="Обзор Эдмонтона" data-en="Edmonton Overview">Обзор Эдмонтона</h2>
+<p data-ru="Главная аналитическая панель" data-en="Main analytics dashboard">Главная аналитическая панель</p>
+
+<div class="cards">
+<div class="card"><small data-ru="Погода" data-en="Weather">Погода</small><div class="value">—</div><small>API pending</small></div>
+<div class="card"><small data-ru="События" data-en="Events">События</small><div class="value">—</div><small>Calendar pending</small></div>
+<div class="card"><small data-ru="Записи" data-en="Records">Записи</small><div class="value" id="count">0</div><small data-ru="Импортированные данные" data-en="Imported data">Импортированные данные</small></div>
+<div class="card"><small data-ru="Статус" data-en="Status">Статус</small><div class="value" style="font-size:21px" data-ru="Демо" data-en="Demo">Демо</div><small data-ru="Источники не подключены" data-en="Sources not connected">Источники не подключены</small></div>
+</div>
+
+<div class="layout">
+<div class="card">
+<h2 data-ru="Пример наблюдений" data-en="Sample observations">Пример наблюдений</h2>
+<div class="chart">
+<div class="barbox"><div class="bar" style="height:38%"></div><small>Mon</small></div>
+<div class="barbox"><div class="bar" style="height:55%"></div><small>Tue</small></div>
+<div class="barbox"><div class="bar" style="height:43%"></div><small>Wed</small></div>
+<div class="barbox"><div class="bar" style="height:72%"></div><small>Thu</small></div>
+<div class="barbox"><div class="bar" style="height:61%"></div><small>Fri</small></div>
+<div class="barbox"><div class="bar" style="height:86%"></div><small>Sat</small></div>
+<div class="barbox"><div class="bar" style="height:68%"></div><small>Sun</small></div>
+</div>
+<small data-ru="Демонстрационные значения" data-en="Illustrative values">Демонстрационные значения</small>
+</div>
+
+<div class="card">
+<h2 data-ru="Карта Эдмонтона" data-en="Edmonton Map">Карта Эдмонтона</h2>
+<div class="map">📍<br><b>Edmonton, Alberta</b><br>Interactive map coming soon</div>
+</div>
+</div>
+</section>
+
+<section id="weather" class="section">
+<div class="card"><h2 data-ru="Погода" data-en="Weather">Погода</h2><p data-ru="Здесь появится актуальный прогноз погоды." data-en="Live weather forecast will appear here.">Здесь появится актуальный прогноз погоды.</p><div class="notice">Weather API not connected yet.</div></div>
+</section>
+
+<section id="events" class="section">
+<div class="card"><h2 data-ru="Городские события" data-en="City Events">Городские события</h2><p data-ru="Календарь концертов, фестивалей и мероприятий." data-en="Calendar of concerts, festivals and public events.">Календарь концертов, фестивалей и мероприятий.</p></div>
+</section>
+
+<section id="stats" class="section">
+<div class="card"><h2 data-ru="Статистика" data-en="Statistics">Статистика</h2><div id="tableArea">No imported data yet.</div></div>
+</section>
+
+<section id="import" class="section">
+<div class="card">
+<h2 data-ru="Импорт данных" data-en="Import Data">Импорт данных</h2>
+<p data-ru="Загрузить CSV-файл для анализа." data-en="Upload a CSV file for analysis.">Загрузить CSV-файл для анализа.</p>
+<input type="file" id="file" accept=".csv">
+<p id="status"></p>
+</div>
+</section>
+</main>
+
+<footer>Edmonton Analytics · Prototype 0.1</footer>
+
+<script>
+let language='ru';
+
+function show(id,button){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+button.classList.add('active');
+}
+
+function changeLang(){
+language=language==='ru'?'en':'ru';
+document.getElementById('lang').textContent=language==='ru'?'EN':'RU';
+document.documentElement.lang=language;
+document.querySelectorAll('[data-ru]').forEach(el=>{
+el.textContent=el.getAttribute('data-'+language);
+});
+}
+
+document.getElementById('file').addEventListener('change',async function(){
+const file=this.files[0];
+if(!file)return;
+const text=await file.text();
+const lines=text.split(/\r?\n/).filter(x=>x.trim());
+const headers=lines[0].split(',');
+const rows=lines.slice(1);
+document.getElementById('count').textContent=rows.length;
+document.getElementById('status').textContent='Loaded: '+file.name;
+let html='<table><tr>'+headers.map(h=>'<th>'+escapeHtml(h)+'</th>').join('')+'</tr>';
+rows.slice(0,100).forEach(row=>{
+html+='<tr>'+row.split(',').map(v=>'<td>'+escapeHtml(v)+'</td>').join('')+'</tr>';
+});
+html+='</table>';
+document.getElementById('tableArea').innerHTML=html;
+});
+
+function escapeHtml(s){
+return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+</body>
+</html>
