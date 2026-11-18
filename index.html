@@ -367,6 +367,7 @@ applyLanguage();
 loadWeather();
 loadTraffic();
 loadEvents();
+loadHourlyTraffic();
 setText("updated",t("updated")+": "+new Date().toLocaleString());
 setInterval(loadWeather,15*60*1000);
 setInterval(loadTraffic,10*60*1000);
